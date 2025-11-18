@@ -523,3 +523,45 @@ updateMap();
 updateLivestockVisibility();
 renderAnimalSelect();
 updateSummary();
+// Botones de scroll
+const scrollTopBtn = document.getElementById("scrollTopBtn");
+const scrollBottomBtn = document.getElementById("scrollBottomBtn");
+
+// Mostrar/ocultar botones según scroll
+function toggleScrollButtons() {
+  const app = document.getElementById("app");
+  const scrollTop = app.scrollTop;
+  const scrollHeight = app.scrollHeight;
+  const clientHeight = app.clientHeight;
+
+  // Mostrar botón arriba si no está en top
+  scrollTopBtn.style.display = scrollTop > 100 ? "block" : "none";
+  
+  // Mostrar botón abajo si no está en bottom
+  scrollBottomBtn.style.display = scrollTop < (scrollHeight - clientHeight - 100) ? "block" : "none";
+}
+
+// Scroll to top
+scrollTopBtn.addEventListener("click", () => {
+  document.getElementById("app").scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
+
+// Scroll to bottom
+scrollBottomBtn.addEventListener("click", () => {
+  const app = document.getElementById("app");
+  app.scrollTo({
+    top: app.scrollHeight,
+    behavior: "smooth"
+  });
+});
+
+// Event listener para detectar scroll
+document.getElementById("app").addEventListener("scroll", toggleScrollButtons);
+
+// Inicializar visibilidad de botones
+setTimeout(toggleScrollButtons, 100);
+
+// ===> HASTA AQUÍ <===
