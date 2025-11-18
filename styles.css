@@ -627,3 +627,8 @@ button:active {
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
+.scroll-top-btn,
+.scroll-bottom-btn {
+  display: block !important;
+  background: red !important; /* Color llamativo para verlos */
+}
