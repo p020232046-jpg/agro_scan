@@ -569,3 +569,9 @@ button:active {
   #main-screen {
   }
 }
+
+#app {
+  overflow-y: auto;
+  max-height: 100vh;
+  scroll-behavior: smooth;
+}
