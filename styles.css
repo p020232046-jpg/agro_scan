@@ -1,0 +1,571 @@
+:root {
+  --bg: #f6f4ee;
+  --card-bg: rgba(255,255,255,0.55);
+  --accent: #2f6b2f;
+  --accent-soft: #dbe9d5;
+  --accent-strong: #215021;
+  --text-main: #222222;
+  --text-soft: #555555;
+  --border-soft: rgba(224,223,213,0.45);
+  --danger: #c0392b;
+  --warning: #e67e22;
+  --ok: #1f8a4d;
+  --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.04);
+  --radius-card: 18px;
+}
+
+/* Subtle moving grass layer settings */
+:root {
+  --farm-bg: url("farm_scene.png");
+  --grass-speed: 18s;
+  --overlay: linear-gradient(180deg, rgba(255,255,255,0.70) 0%, rgba(245,243,236,0.66) 45%, rgba(240,238,232,0.72) 100%);
+}
+
+*, 
+*::before, 
+*::after {
+  box-sizing: border-box;
+}
+
+html, 
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top left, #fdfbf5 0, #f3efe5 45%, #ece6d4 100%);
+  color: var(--text-main);
+}
+
+body {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  /* Farm background with two layered backgrounds:
+     1) subtle parallax repeating green band to simulate moving grass,
+     2) main farm illustration,
+     3) gentle overlay to keep contrast. */
+  background-image:
+    linear-gradient(transparent 60%, rgba(255,255,255,0.0)), /* placeholder to preserve layering */
+    var(--farm-bg);
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Moving grass pseudo-layer */
+body::after {
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: 0;
+  height: 30%;
+  background-image: linear-gradient(90deg, rgba(40,110,40,0.08) 0%, rgba(60,140,60,0.10) 50%, rgba(40,110,40,0.08) 100%);
+  transform: translateZ(0);
+  z-index: 0;
+  filter: blur(6px) saturate(1.05);
+  animation: grass-sway var(--grass-speed) linear infinite;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* soft overlay to keep cards readable */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 248, 241, 0.28);
+  z-index: 0;
+  pointer-events: none;
+  backdrop-filter: none;
+}
+
+/* Ensure app content sits above background layers */
+#app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  padding: 12px 10px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keyframes for slow horizontal drift to simulate grass motion */
+@keyframes grass-sway {
+  0% { transform: translateX(-5%) translateY(0) translateZ(0) skewX(-1deg); }
+  50% { transform: translateX(5%) translateY(-2px) translateZ(0) skewX(1deg); }
+  100% { transform: translateX(-5%) translateY(0) translateZ(0) skewX(-1deg); }
+}
+
+/* Screens */
+
+.screen {
+  display: none;
+  flex: 1;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* Intro */
+
+.intro-card {
+  background: linear-gradient(rgba(255,255,255,0.28), rgba(255,255,255,0.20));
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(4px) saturate(1.02);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.intro-card::before {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #f4f9f0 0, #e4f0dd 45%, transparent 70%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.intro-left,
+.intro-right {
+  position: relative;
+  z-index: 1;
+}
+
+.logo-main {
+  display: flex;
+  justify-content: center;
+}
+
+.logo-main img {
+  max-width: 1160px;
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.logo-row {
+  display: flex;
+  justify-content: center;
+  gap: 110px;
+}
+
+.logo-row img {
+  max-width: 186px;
+  max-height: 146px;
+  object-fit: contain;
+}
+
+.intro-text {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin: 2px 0 0;
+}
+
+.intro-list {
+  margin: 2px 0 4px;
+  padding-left: 18px;
+  font-size: 0.76rem;
+  color: var(--text-soft);
+}
+
+.intro-list li {
+  margin-bottom: 2px;
+}
+
+.intro-form {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-soft);
+}
+
+.intro-form h2 {
+  font-size: 0.9rem;
+  margin: 0 0 4px;
+}
+
+/* Form fields */
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.field-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-row .field-group {
+  flex: 1;
+}
+
+label,
+.field-label {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+}
+
+input, 
+select {
+  font-size: 0.78rem;
+  padding: 7px 8px;
+  border-radius: 9px;
+  border: 1px solid var(--border-soft);
+  outline: none;
+  background-color: rgba(250,248,240,0.18);
+  color: var(--text-main);
+  backdrop-filter: blur(3px);
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+input::placeholder {
+  color: rgba(34,34,34,0.45);
+}
+
+input:focus, 
+select:focus {
+  border-color: var(--accent);
+  background-color: rgba(255,255,255,0.72);
+}
+
+/* Chips */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(43,100,43,0.05);
+  background: rgba(247,251,243,0.12);
+  font-size: 0.72rem;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+.chip-option input {
+  accent-color: var(--accent);
+}
+
+/* Buttons */
+
+button {
+  border: none;
+  border-radius: 100px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.primary-btn {
+  width: 100%;
+  margin-top: 4px;
+  background: linear-gradient(135deg, rgba(47,107,47,0.95), rgba(33,80,33,0.92));
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(47, 107, 47, 0.18);
+}
+
+.secondary-btn {
+  background: rgba(219,233,213,0.18);
+  color: var(--accent-strong);
+  backdrop-filter: blur(2px);
+}
+
+.ghost-btn {
+  background: transparent;
+  color: var(--accent-strong);
+  border: 1px solid rgba(33,80,33,0.06);
+  padding: 6px 10px;
+}
+
+/* Main screen */
+
+#main-screen {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.top-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.summary-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: 0.68rem;
+  border-radius: 999px;
+  background-color: rgba(33, 80, 33, 0.03);
+  color: var(--accent-strong);
+}
+
+/* Tabs */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 7px 6px;
+  background: transparent;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  border: none;
+}
+
+.tab-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 3px 9px rgba(47, 107, 47, 0.4);
+}
+
+.tab-panel {
+  display: none;
+  margin-top: 6px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* Cards */
+
+.card {
+  background: linear-gradient(rgba(255,255,255,0.28), rgba(255,255,255,0.18));
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-soft);
+  padding: 10px;
+  margin-bottom: 8px;
+  backdrop-filter: blur(4px) saturate(1.02);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.card h3 {
+  margin: 0 0 4px;
+  font-size: 0.88rem;
+}
+
+.card-subtitle {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  color: var(--text-soft);
+}
+
+/* Sensors */
+
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.sensor-item {
+  background-color: rgba(250,248,240,0.14);
+  border-radius: 12px;
+  padding: 6px 7px;
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(224,223,213,0.04);
+}
+
+.sensor-label {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+}
+
+.sensor-value {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.sensor-note {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+  margin: 0 0 4px;
+}
+
+/* Status & results */
+
+.status-text {
+  font-size: 0.76rem;
+  margin: 0 0 4px;
+}
+
+.status-text.ok {
+  color: var(--ok);
+}
+
+.status-text.warning {
+  color: var(--warning);
+}
+
+.status-text.danger {
+  color: var(--danger);
+}
+
+.suggest-list {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 0.72rem;
+  color: var(--text-soft);
+}
+
+.suggest-list li {
+  margin-bottom: 2px;
+}
+
+.result-text {
+  font-size: 0.78rem;
+  margin: 4px 0 0;
+}
+
+/* Map */
+
+.map-note {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+  margin: 0 0 6px;
+}
+
+.map-frame {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  height: 130px;
+  background-color: rgba(233,230,219,0.12);
+  backdrop-filter: blur(3px);
+}
+
+.map-frame iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Animal list */
+
+.animal-list-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.animal-select-group {
+  flex: 1;
+}
+
+.animal-summary-pill {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(242,250,241,0.14);
+  color: var(--accent-strong);
+  white-space: nowrap;
+  backdrop-filter: blur(3px);
+}
+
+/* Responsive: small phones */
+
+@media (max-height: 700px) {
+  .intro-card {
+    padding: 10px;
+  }
+
+  .logo-main img {
+    max-width: 130px;
+    max-height: 60px;
+  }
+
+  .logo-row img {
+    max-width: 70px;
+    max-height: 40px;
+  }
+
+  .map-frame {
+    height: 110px;
+  }
+}
+
+/* Responsive: tablets y escritorio */
+
+@media (min-width: 768px) {
+  #app {
+    padding: 16px 20px;
+  }
+
+  .intro-card {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .intro-left {
+    flex: 1;
+    padding-right: 10px;
+  }
+
+  .intro-right {
+    flex: 1;
+    border-left: 1px dashed var(--border-soft);
+    padding-left: 12px;
+  }
+
+  .tab-panel {
+    margin-top: 10px;
+  }
+
+  #main-screen {
+  }
+}

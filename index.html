@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>AgroScan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+    }
+  }
+  </script>
+  <script type="module" src="main.js" defer></script>
+</head>
+<body>
+  <div id="app">
+    <!-- PANTALLA INICIO / INTRO -->
+    <section id="intro-screen" class="screen active">
+      <div class="intro-card">
+        <div class="intro-left">
+          <div class="logo-main">
+            <img src="agroscan.png" alt="Logo AgroScan" />
+          </div>
+          <div class="logo-row">
+            <img src="logocobaej.png" alt="Logo COBAEJ" />
+            <img src="loboscobaej.png" alt="Logo Lobos COBAEJ" />
+          </div>
+          <p class="intro-text">
+            Plataforma de apoyo para ganaderos y agricultores que integra sensores,
+            cámaras infrarrojas y medidores de humedad para:
+          </p>
+          <ul class="intro-list">
+            <li>Detectar estrés y posibles enfermedades en ganado bovino, ovino, porcino y aves.</li>
+            <li>Calcular riego óptimo según humedad del suelo y clima.</li>
+            <li>Estimar dosis de abono y plaguicidas según el cultivo y la superficie.</li>
+          </ul>
+        </div>
+
+        <div class="intro-right">
+          <div class="intro-form">
+            <h2>Configuración inicial</h2>
+
+            <div class="field-group">
+              <label for="focus-mode">Enfoque de la aplicación</label>
+              <select id="focus-mode">
+                <option value="ambas" selected>Ganadería y agricultura</option>
+                <option value="ganaderia">Solo ganadería</option>
+                <option value="agricultura">Solo agricultura</option>
+              </select>
+            </div>
+
+            <div id="livestock-types-group" class="field-group">
+              <span class="field-label">Tipos de ganado a monitorear</span>
+              <div class="chip-row">
+                <label class="chip-option">
+                  <input type="checkbox" value="bovino" class="livestock-type-check" checked />
+                  <span>Bovino</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox" value="ovino" class="livestock-type-check" />
+                  <span>Ovino</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox" value="porcino" class="livestock-type-check" />
+                  <span>Porcino</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox" value="aves" class="livestock-type-check" />
+                  <span>Gallos y gallinas</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="num-animal">N° de animal de referencia</label>
+                <input id="num-animal" type="text" placeholder="Ej. 015" />
+              </div>
+              <div class="field-group">
+                <label for="num-chip">N° de chip / arete</label>
+                <input id="num-chip" type="text" placeholder="Ej. CH-1023" />
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="field-coords">Coordenadas o localidad del predio</label>
+                <input
+                  id="field-coords"
+                  type="text"
+                  placeholder="Ej. 20.676, -103.347 o 'San Miguel, Jalisco'"
+                />
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="field-area">Superficie aproximada (ha)</label>
+                <input id="field-area" type="number" min="0" step="0.1" placeholder="Ej. 2.5" />
+              </div>
+              <div class="field-group">
+                <label for="soil-type">Tipo de suelo</label>
+                <select id="soil-type">
+                  <option value="franco">Franco</option>
+                  <option value="arenoso">Arenoso</option>
+                  <option value="arcilloso">Arcilloso</option>
+                  <option value="pedregoso">Pedregoso</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="irrigation-system">Sistema de riego</label>
+                <select id="irrigation-system">
+                  <option value="gravedad">Gravedad</option>
+                  <option value="aspersión">Aspersión</option>
+                  <option value="goteo">Goteo</option>
+                  <option value="ninguno">No definido</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="predio-alias">Nombre del predio</label>
+                <input id="predio-alias" type="text" placeholder="Ej. Rancho El Roble" />
+              </div>
+            </div>
+
+            <button id="btn-start" class="primary-btn">Entrar a AgroScan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA PRINCIPAL -->
+    <section id="main-screen" class="screen">
+      <div class="top-summary">
+        <div class="summary-left">
+          <span class="badge" id="summary-focus">Modo: -</span>
+          <span class="badge" id="summary-ganado">Ganado: sin registrar</span>
+          <span class="badge" id="summary-field">Predio sin localizar</span>
+        </div>
+        <button id="btn-edit" class="ghost-btn">Editar datos</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-ganaderia">Ganadería</button>
+        <button class="tab-btn" data-tab="tab-agricultura">Agricultura</button>
+      </div>
+
+      <!-- GANADERÍA -->
+      <div id="tab-ganaderia" class="tab-panel active">
+        <div class="card">
+          <h3>Registro de animales</h3>
+          <p class="card-subtitle">
+            Datos recibidos de chips inteligentes en aretes, collares y cámaras del corral.
+          </p>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="animal-type">Tipo de ganado</label>
+              <select id="animal-type">
+                <option value="bovino">Bovino</option>
+                <option value="ovino">Ovino</option>
+                <option value="porcino">Porcino</option>
+                <option value="aves">Gallos y gallinas</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="animal-id">N° animal</label>
+              <input id="animal-id" type="text" placeholder="Ej. 015" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="animal-chip">N° chip / arete</label>
+              <input id="animal-chip" type="text" placeholder="Ej. CH-1023" />
+            </div>
+            <div class="field-group">
+              <label for="animal-age">Edad (años)</label>
+              <input id="animal-age" type="number" min="0" step="0.1" placeholder="Ej. 2.5" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="animal-weight">Peso aproximado (kg)</label>
+              <input id="animal-weight" type="number" min="0" step="1" placeholder="Ej. 450" />
+            </div>
+            <div class="field-group">
+              <label for="animal-stage">Etapa de producción</label>
+              <select id="animal-stage">
+                <option value="engorda">Engorda</option>
+                <option value="reproduccion">Reproducción</option>
+                <option value="cria">Cría</option>
+                <option value="dobleproposito">Doble propósito</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="btn-add-animal" class="secondary-btn">Añadir animal al listado</button>
+
+          <div class="animal-list-row">
+            <div class="field-group animal-select-group">
+              <label for="animal-select">Animal elegido para análisis</label>
+              <select id="animal-select">
+                <option value="">Sin animales registrados</option>
+              </select>
+            </div>
+            <div class="animal-summary-pill" id="animal-summary-pill">
+              0 animales registrados
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Lecturas de sensores (simuladas)</h3>
+          <p class="card-subtitle">
+            Módulo conectado a cámara infrarroja, chip inteligente y podómetro del corral.
+          </p>
+          <div class="sensor-grid">
+            <div class="sensor-item">
+              <span class="sensor-label">Temp. corporal</span>
+              <span id="sensor-temp" class="sensor-value">-</span>
+            </div>
+            <div class="sensor-item">
+              <span class="sensor-label">Frecuencia cardíaca</span>
+              <span id="sensor-hr" class="sensor-value">-</span>
+            </div>
+            <div class="sensor-item">
+              <span class="sensor-label">Actividad diaria</span>
+              <span id="sensor-act" class="sensor-value">-</span>
+            </div>
+            <div class="sensor-item">
+              <span class="sensor-label">Temp. infrarroja</span>
+              <span id="sensor-ir" class="sensor-value">-</span>
+            </div>
+          </div>
+          <p class="sensor-note">
+            Datos recibidos de: cámara infrarroja, chip inteligente en el arete y podómetro de corral.
+          </p>
+          <button id="btn-refresh-livestock" class="secondary-btn">Actualizar lectura</button>
+        </div>
+
+        <div class="card">
+          <h3>Estado del animal</h3>
+          <p id="livestock-status" class="status-text">Registra primero tus datos en la pantalla inicial.</p>
+          <ul id="livestock-suggestions" class="suggest-list"></ul>
+        </div>
+      </div>
+
+      <!-- AGRICULTURA -->
+      <div id="tab-agricultura" class="tab-panel">
+        <div class="card">
+          <h3>Cálculo de riego</h3>
+          <p class="card-subtitle">
+            Ajuste basado en medidor de humedad, clima local y sistema de riego seleccionado.
+          </p>
+          <div class="field-row">
+            <div class="field-group">
+              <label for="soil-moisture">Humedad del suelo (%)</label>
+              <input id="soil-moisture" type="number" min="0" max="100" placeholder="Ej. 35" />
+            </div>
+            <div class="field-group">
+              <label for="air-temp">Temperatura ambiente (°C)</label>
+              <input id="air-temp" type="number" step="0.1" placeholder="Ej. 28" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label for="crop-type">Cultivo principal</label>
+              <select id="crop-type">
+                <option value="maiz">Maíz</option>
+                <option value="pastura">Pastura / forraje</option>
+                <option value="hortalizas">Hortalizas</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="irrigation-frequency">Frecuencia deseada</label>
+              <select id="irrigation-frequency">
+                <option value="baja">Baja</option>
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+          </div>
+          <button id="btn-calc-irrigation" class="secondary-btn">Calcular riego</button>
+          <p id="irrigation-result" class="result-text"></p>
+        </div>
+
+        <div class="card">
+          <h3>Abono y plaguicidas</h3>
+          <p class="card-subtitle">
+            Cálculo de dosis estimada según tipo de abono, presión de plagas y superficie del predio.
+          </p>
+          <div class="field-row">
+            <div class="field-group">
+              <label for="fert-type">Tipo de abono</label>
+              <select id="fert-type">
+                <option value="organico">Orgánico</option>
+                <option value="quimico">Químico</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="pressure-level">Presión de plagas</label>
+              <select id="pressure-level">
+                <option value="baja">Baja</option>
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+          </div>
+          <button id="btn-calc-fert" class="secondary-btn">Calcular abono y plaguicida</button>
+          <p id="fert-result" class="result-text"></p>
+        </div>
+
+        <div class="card">
+          <h3>Ubicación del predio (simulada)</h3>
+          <p class="map-note">
+            Información basada en coordenadas recibidas desde tu marcador en Google Maps o GPS del medidor de humedad.
+          </p>
+          <div class="map-frame">
+            <iframe
+              id="map-iframe"
+              title="Ubicación del predio"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
