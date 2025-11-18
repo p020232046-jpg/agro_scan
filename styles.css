@@ -569,9 +569,61 @@ button:active {
   #main-screen {
   }
 }
-
+/* Scroll personalizado */
 #app {
   overflow-y: auto;
   max-height: 100vh;
   scroll-behavior: smooth;
+}
+
+/* Ocultar scrollbar por defecto pero mantener funcionalidad */
+#app::-webkit-scrollbar {
+  width: 6px;
+}
+
+#app::-webkit-scrollbar-track {
+  background: rgba(47, 107, 47, 0.1);
+  border-radius: 10px;
+}
+
+#app::-webkit-scrollbar-thumb {
+  background: rgba(47, 107, 47, 0.3);
+  border-radius: 10px;
+}
+
+#app::-webkit-scrollbar-thumb:hover {
+  background: rgba(47, 107, 47, 0.5);
+}
+
+/* Botones de scroll (opcionales) */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.scroll-bottom-btn {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
