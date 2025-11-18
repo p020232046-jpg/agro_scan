@@ -155,19 +155,19 @@ body::before {
 
 .logo-main img {
   max-width: 1160px;
-  max-height: 1180px;
+  max-height: 180px;
   object-fit: contain;
 }
 
 .logo-row {
   display: flex;
   justify-content: center;
-  gap: 1110px;
+  gap: 110px;
 }
 
 .logo-row img {
-  max-width: 986px;
-  max-height: 946px;
+  max-width: 186px;
+  max-height: 146px;
   object-fit: contain;
 }
 
