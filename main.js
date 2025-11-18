@@ -523,45 +523,46 @@ updateMap();
 updateLivestockVisibility();
 renderAnimalSelect();
 updateSummary();
-// Botones de scroll
+// === CÓDIGO DE DEPURACIÓN - REEMPLAZA TEMPORALMENTE ===
+console.log("Script de scroll cargado");
+
 const scrollTopBtn = document.getElementById("scrollTopBtn");
 const scrollBottomBtn = document.getElementById("scrollBottomBtn");
 
-// Mostrar/ocultar botones según scroll
-function toggleScrollButtons() {
-  const app = document.getElementById("app");
-  const scrollTop = app.scrollTop;
-  const scrollHeight = app.scrollHeight;
-  const clientHeight = app.clientHeight;
+console.log("Botones encontrados:", {
+  topBtn: scrollTopBtn,
+  bottomBtn: scrollBottomBtn
+});
 
-  // Mostrar botón arriba si no está en top
-  scrollTopBtn.style.display = scrollTop > 100 ? "block" : "none";
-  
-  // Mostrar botón abajo si no está en bottom
-  scrollBottomBtn.style.display = scrollTop < (scrollHeight - clientHeight - 100) ? "block" : "none";
+if (!scrollTopBtn || !scrollBottomBtn) {
+  console.error("❌ NO SE ENCONTRARON LOS BOTONES EN EL HTML");
+} else {
+  console.log("✅ Botones encontrados correctamente");
 }
 
-// Scroll to top
+// Función simplificada para testing
+function toggleScrollButtons() {
+  console.log("toggleScrollButtons ejecutado");
+  scrollTopBtn.style.display = "block"; // Forzar visibilidad para testing
+  scrollBottomBtn.style.display = "block"; // Forzar visibilidad para testing
+}
+
 scrollTopBtn.addEventListener("click", () => {
-  document.getElementById("app").scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+  console.log("Botón arriba clickeado");
+  document.getElementById("app").scrollTo({ top: 0, behavior: "smooth" });
 });
 
-// Scroll to bottom
 scrollBottomBtn.addEventListener("click", () => {
+  console.log("Botón abajo clickeado");
   const app = document.getElementById("app");
-  app.scrollTo({
-    top: app.scrollHeight,
-    behavior: "smooth"
-  });
+  app.scrollTo({ top: app.scrollHeight, behavior: "smooth" });
 });
 
-// Event listener para detectar scroll
 document.getElementById("app").addEventListener("scroll", toggleScrollButtons);
 
-// Inicializar visibilidad de botones
-setTimeout(toggleScrollButtons, 100);
-
-// ===> HASTA AQUÍ <===
+// Forzar visibilidad inicial
+setTimeout(() => {
+  scrollTopBtn.style.display = "block";
+  scrollBottomBtn.style.display = "block";
+  console.log("Botones forzados a ser visibles");
+}, 1000);
